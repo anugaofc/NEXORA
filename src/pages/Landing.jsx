@@ -1,93 +1,138 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { MessageSquare, Users, Radio, Shield, Globe, Zap, ArrowRight, CheckCircle } from 'lucide-react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Home from './pages/Home';
+import Admin from './pages/Admin';
+import Profile from './pages/Profile';
+import Join from './pages/Join';
+import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './hooks/useAuth';
 import { motion } from 'framer-motion';
+import BulkStickerUpload from './components/BulkStickerUpload';
 
-const Landing = () => {
-  const navigate = useNavigate();
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
 
-  const features = [
-    { icon: <MessageSquare className="text-blue-400" />, title: 'Real-time Chats', desc: 'Instant messaging with end-to-end feel and premium glass UI.' },
-    { icon: <Users className="text-purple-400" />, title: 'Dynamic Groups', desc: 'Create and manage communities with advanced admin controls.' },
-    { icon: <Radio className="text-green-400" />, title: 'Broadcasting', desc: 'Launch channels to reach thousands of followers instantly.' },
-    { icon: <Shield className="text-red-400" />, title: 'Secure & Private', desc: 'Your data is stored in serverless Cloudflare Workers and Firebase.' },
-    { icon: <Globe className="text-yellow-400" />, title: 'Global Reach', desc: 'Connect with anyone, anywhere, with high-speed serverless hosting.' },
-    { icon: <Zap className="text-cyan-400" />, title: 'Ultra Fast', desc: 'Powered by Cloudflare Edge for the lowest latency possible.' },
-  ];
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '2rem', color: 'white', background: '#900' }}>
+          <h1>Something went wrong.</h1>
+          <pre>{this.state.error?.toString()}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const AppRoutes = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          width: '100vw',
+          background: 'radial-gradient(circle at top, rgba(59,130,246,0.28), rgba(2,6,23,1) 48%, #020617 100%)',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+            maskImage: 'radial-gradient(circle at center, black 35%, transparent 100%)',
+          }}
+        />
+
+        <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem' }}>
+          <motion.div
+            animate={{ scale: [1, 1.12, 1], rotate: [0, 6, -6, 0], opacity: [0.8, 1, 0.8] }}
+            transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+            style={{
+              width: 128,
+              height: 128,
+              borderRadius: 40,
+              background: 'linear-gradient(135deg, rgba(96,165,250,0.18), rgba(168,85,247,0.18))',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              boxShadow: '0 0 35px rgba(59,130,246,0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <img
+              src="/logo.png"
+              style={{ width: '70%', height: '70%', objectFit: 'contain', filter: 'drop-shadow(0 0 22px rgba(59,130,246,0.8))' }}
+              alt="Nexora"
+            />
+          </motion.div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+            <div className="flex-center" style={{ gap: '10px' }}>
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--primary)', animation: 'pulse 1.5s infinite 0s' }} />
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#8b5cf6', animation: 'pulse 1.5s infinite 0.2s' }} />
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#38bdf8', animation: 'pulse 1.5s infinite 0.4s' }} />
+            </div>
+            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'white', letterSpacing: '6px', opacity: 0.8, textTransform: 'uppercase' }}>
+              Nexora
+            </div>
+          </div>
+
+          <style>{`
+            @keyframes pulse {
+              0%, 100% { transform: scale(1); opacity: 0.35; }
+              50% { transform: scale(1.6); opacity: 1; filter: blur(1px); }
+            }
+          `}</style>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ width: '100vw', minHeight: '100vh', overflowX: 'hidden', overflowY: 'auto' }}>
-      {/* Hero Section */}
-      <section style={{ padding: '8rem 2rem 4rem', textAlign: 'center', position: 'relative' }}>
-        <div className="animate-float" style={{ position: 'absolute', top: '10%', left: '50%', transform: 'translateX(-50%)', width: '300px', height: '300px', background: 'var(--primary-glow)', filter: 'blur(100px)', zIndex: -1 }}></div>
-        
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          <h1 style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', marginBottom: '1.5rem' }}>
-            Next Gen <span className="gradient-text">Social Platform</span>
-          </h1>
-          <p style={{ fontSize: '1.25rem', color: 'var(--text-dim)', maxWidth: '700px', margin: '0 auto 2.5rem', lineHeight: '1.6' }}>
-            Experience Sannasa—the ultimate social media ecosystem for chats, groups, and channels. Built on serverless architecture for the modern web.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <button onClick={() => navigate('/signup')} className="btn-primary" style={{ padding: '16px 32px', fontSize: '1.1rem' }}>
-              Get Started <ArrowRight size={20} />
-            </button>
-            <button onClick={() => navigate('/login')} className="glass" style={{ padding: '16px 32px', fontSize: '1.1rem', borderRadius: '12px', border: '1px solid var(--glass-border)', color: 'white', cursor: 'pointer' }}>
-              Sign In
-            </button>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Features Grid */}
-      <section style={{ padding: '4rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <h2 style={{ textAlign: 'center', fontSize: '2.5rem', marginBottom: '3rem' }}>Everything you need</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-          {features.map((f, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="glass-card"
-              style={{ padding: '2.5rem' }}
-            >
-              <div style={{ width: '50px', height: '50px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                {f.icon}
-              </div>
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>{f.title}</h3>
-              <p style={{ color: 'var(--text-dim)', lineHeight: '1.5' }}>{f.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Trust Section */}
-      <section style={{ padding: '6rem 2rem', textAlign: 'center' }}>
-        <div className="glass" style={{ maxWidth: '900px', margin: '0 auto', padding: '4rem', borderRadius: '32px' }}>
-          <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>Verified & Trusted</h2>
-          <p style={{ color: 'var(--text-dim)', marginBottom: '2.5rem', fontSize: '1.1rem' }}>Join thousands of creators and developers who choose Sannasa for their community.</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <CheckCircle size={24} className="text-blue-500" /> <span>Meta-style Verification</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <CheckCircle size={24} className="text-blue-500" /> <span>Cloudflare Edge Serving</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <CheckCircle size={24} className="text-blue-500" /> <span>GitHub DB Storage</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer style={{ padding: '4rem 2rem', textAlign: 'center', borderTop: '1px solid var(--glass-border)', marginTop: '4rem' }}>
-        <p style={{ color: 'var(--text-dim)' }}>© 2026 Sannasa Social Platform. Built with ❤️ for the future.</p>
-      </footer>
-    </div>
+    <Routes>
+      <Route path="/welcome" element={!user ? <Landing /> : <Navigate to="/" />} />
+      <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+      <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
+      <Route path="/admin" element={<Admin />} />
+      <Route path="/admin/stickers" element={<BulkStickerUpload />} />
+      <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
+      <Route path="/join/:type/:id" element={<Join />} />
+      <Route path="/" element={user ? <Home /> : <Navigate to="/welcome" />} />
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 };
 
-export default Landing;
+function App() {
+  return (
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </AuthProvider>
+    </ErrorBoundary>
+  );
+}
+
+export default App;

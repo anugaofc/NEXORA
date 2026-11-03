@@ -1,113 +1,93 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { auth, db } from '../services/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { Mail, Lock, Loader2, ArrowRight } from 'lucide-react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MessageSquare, Users, Radio, Shield, Globe, Zap, ArrowRight, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+const Landing = () => {
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-
-      try {
-        const ipRes = await fetch('https://ipapi.co/json/');
-        const ipData = await ipRes.json();
-
-        await addDoc(collection(db, 'sessions'), {
-          uid: user.uid,
-          ip: ipData.ip || 'Unknown',
-          city: ipData.city || 'Unknown',
-          country: ipData.country_name || 'Unknown',
-          browser: navigator.userAgent.split(') ')[1]?.split(' ')[0] || 'Browser',
-          device: window.innerWidth < 768 ? 'mobile' : 'desktop',
-          timestamp: serverTimestamp(),
-          isCurrent: true
-        });
-      } catch (e) {
-        console.error("Session recording failed:", e);
-      }
-
-      navigate('/');
-    } catch (err) {
-      setError('Invalid email or password. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const features = [
+    { icon: <MessageSquare className="text-blue-400" />, title: 'Real-time Chats', desc: 'Instant conversations with premium, cinematic messaging experiences.' },
+    { icon: <Users className="text-purple-400" />, title: 'Dynamic Communities', desc: 'Create vibrant groups and circles with intelligent controls for community growth.' },
+    { icon: <Radio className="text-green-400" />, title: 'Broadcast Reach', desc: 'Send announcements and updates to the people who matter most, instantly.' },
+    { icon: <Shield className="text-red-400" />, title: 'Secure by Design', desc: 'Built with privacy-first architecture and trusted cloud infrastructure.' },
+    { icon: <Globe className="text-yellow-400" />, title: 'Global Access', desc: 'Connect people across regions with seamless, fast, and modern communication.' },
+    { icon: <Zap className="text-cyan-400" />, title: 'High-Speed Experience', desc: 'Optimized for quick interactions, smooth UX, and low-latency delivery.' },
+  ];
 
   return (
-    <div className="flex-center" style={{ width: '100vw', height: '100vh', padding: '1rem' }}>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="glass reveal"
-        style={{ width: '100%', maxWidth: '420px', padding: '3rem', borderRadius: '32px', position: 'relative' }}
-      >
-        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Welcome <span className="gradient-text">Back</span></h1>
-          <p style={{ color: 'var(--text-dim)' }}>Sign in to continue to Sannasa</p>
-        </div>
+    <div className="landing-shell" style={{ width: '100vw', minHeight: '100vh', overflowX: 'hidden', overflowY: 'auto' }}>
+      <div className="hero-ambient hero-ambient-one" />
+      <div className="hero-ambient hero-ambient-two" />
+      <div className="hero-grid" />
 
-        {error && (
-          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} style={{ color: 'var(--error)', background: 'rgba(239, 68, 68, 0.1)', padding: '12px', borderRadius: '12px', marginBottom: '1.5rem', fontSize: '0.9rem', textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-            {error}
-          </motion.div>
-        )}
-
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <div style={{ position: 'relative' }}>
-            <Mail style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)', width: '20px' }} />
-            <input
-              type="email"
-              placeholder="Email Address"
-              className="input-modern"
-              style={{ paddingLeft: '48px' }}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          <div style={{ position: 'relative' }}>
-            <Lock style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)', width: '20px' }} />
-            <input
-              type="password"
-              placeholder="Password"
-              className="input-modern"
-              style={{ paddingLeft: '48px' }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          <button type="submit" className="btn-primary" disabled={loading} style={{ marginTop: '1rem', height: '54px', fontSize: '1.1rem' }}>
-            {loading ? <Loader2 className="animate-spin" /> : <>Sign In <ArrowRight size={20} /></>}
-          </button>
-        </form>
-
-        <div style={{ marginTop: '2.5rem', textAlign: 'center' }}>
-          <p style={{ color: 'var(--text-dim)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-            Don't have an account? <Link to="/signup" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 'bold' }}>Sign up for free</Link>
+      <section style={{ padding: '7rem 2rem 4rem', textAlign: 'center', position: 'relative' }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+          <div className="brand-badge">Developer: Anuga Senithu • UltraDev • Dark Tech Zone</div>
+          <h1 style={{ fontSize: 'clamp(3rem, 8vw, 5.3rem)', marginBottom: '1.2rem', lineHeight: 1.05 }}>
+            Welcome to <span className="gradient-text">Nexora</span>
+          </h1>
+          <p style={{ fontSize: '1.2rem', color: 'var(--text-dim)', maxWidth: '760px', margin: '0 auto 2.3rem', lineHeight: '1.7' }}>
+            Nexora is the next-generation social platform for real-time messaging, communities, creator culture, and seamless digital connection.
           </p>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button onClick={() => navigate('/signup')} className="btn-primary" style={{ padding: '16px 32px', fontSize: '1.05rem' }}>
+              Get Started <ArrowRight size={20} />
+            </button>
+            <button onClick={() => navigate('/login')} className="glass" style={{ padding: '16px 32px', fontSize: '1.05rem', borderRadius: '12px', border: '1px solid var(--glass-border)', color: 'white' }}>
+              Sign In
+            </button>
+          </div>
+
+          <div className="ownership-banner">
+            Full ownership and creative rights belong to UltraDev and Dark Tech Zone.
+          </div>
+        </motion.div>
+      </section>
+
+      <section style={{ padding: '4rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <h2 style={{ textAlign: 'center', fontSize: '2.5rem', marginBottom: '3rem' }}>Built for modern communities</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          {features.map((f, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="glass-card"
+              style={{ padding: '2.5rem', borderRadius: '24px' }}
+            >
+              <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.2rem' }}>
+                {f.icon}
+              </div>
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>{f.title}</h3>
+              <p style={{ color: 'var(--text-dim)', lineHeight: '1.6' }}>{f.desc}</p>
+            </motion.div>
+          ))}
         </div>
-      </motion.div>
+      </section>
+
+      <section style={{ padding: '6rem 2rem', textAlign: 'center' }}>
+        <div className="glass" style={{ maxWidth: '960px', margin: '0 auto', padding: '4rem', borderRadius: '32px', position: 'relative', overflow: 'hidden' }}>
+          <div className="video-panel" />
+          <h2 style={{ fontSize: '2.5rem', marginBottom: '1.2rem', position: 'relative', zIndex: 1 }}>Trusted by creators, teams, and digital communities</h2>
+          <p style={{ color: 'var(--text-dim)', marginBottom: '2.5rem', fontSize: '1.1rem', position: 'relative', zIndex: 1 }}>
+            Nexora brings together private messaging, fast communities, and premium social experiences designed for the next era of digital connection.
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle size={24} className="text-blue-500" /> <span>Premium Security</span></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle size={24} className="text-blue-500" /> <span>Lightning-Fast Delivery</span></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle size={24} className="text-blue-500" /> <span>Modern Community Tools</span></div>
+          </div>
+        </div>
+      </section>
+
+      <footer style={{ padding: '4rem 2rem', textAlign: 'center', borderTop: '1px solid var(--glass-border)', marginTop: '4rem' }}>
+        <p style={{ color: 'var(--text-dim)' }}>© 2026 Nexora by UltraDev. Built by Anuga Senithu and the Dark Tech Zone team.</p>
+      </footer>
     </div>
   );
 };
 
-export default Login;
+export default Landing;
