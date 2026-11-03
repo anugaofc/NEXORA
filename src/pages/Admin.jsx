@@ -90,8 +90,8 @@ const Admin = () => {
     try {
       await addDoc(collection(db, 'messages'), {
         chatId: `support_${msg.senderId}`,
-        senderId: 'sannasa_system',
-        senderName: 'Sannasa Official',
+        senderId: 'nexora_server',
+        senderName: 'Nexora Official',
         text: text,
         replyToId: msg.originalMsgId || null,
         replyToText: msg.text || '',
@@ -121,10 +121,10 @@ const Admin = () => {
     if (!systemMsg.trim()) return;
     try {
       await addDoc(collection(db, 'messages'), {
-        chatId: 'sannasa_official', senderId: 'sannasa_system', senderName: 'Sannasa Official',
+        chatId: 'nexora_official', senderId: 'nexora_server', senderName: 'Nexora Official',
         text: systemMsg, timestamp: serverTimestamp(), type: 'text'
       });
-      await setDoc(doc(db, 'conversations', 'sannasa_official'), {
+      await setDoc(doc(db, 'conversations', 'nexora_official'), {
         lastMessage: systemMsg,
         lastMessageTime: serverTimestamp(),
         isPublic: true
@@ -216,7 +216,7 @@ const Admin = () => {
                 </div>
                 <div className="admin-card">
                   <h4 style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 15 }}><Mail size={20} color="var(--primary)" /> Broadcast</h4>
-                  <p style={{ color: 'var(--text-dim)', marginBottom: 20 }}>Send announcements to all Sannasa users.</p>
+                  <p style={{ color: 'var(--text-dim)', marginBottom: 20 }}>Send announcements to all Nexora users.</p>
                   <button onClick={() => setActiveTab('system')} className="btn-primary" style={{ width: '100%' }}>Create Message</button>
                 </div>
               </div>
@@ -299,7 +299,7 @@ const Admin = () => {
             <motion.div key="system" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <h2 style={{ fontSize: '2.2rem', fontWeight: 800, marginBottom: 30 }}>Broadcast Announcement</h2>
               <div className="admin-card" style={{ maxWidth: 600 }}>
-                <p style={{ color: 'var(--text-dim)', marginBottom: 20 }}>This message will be sent to the official Sannasa channel and visible to all users.</p>
+                <p style={{ color: 'var(--text-dim)', marginBottom: 20 }}>This message will be sent to the Official Nexora Channel and visible to all Nexora users.</p>
                 <textarea
                   className="input-modern"
                   placeholder="Type your global announcement here..."
