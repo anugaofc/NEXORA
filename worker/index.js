@@ -1,7 +1,3 @@
-/**
- * Sannasa Cloudflare Worker
- * Supports: Catbox → Pomf → Quax → Uguu → Cloudku (fallback chain)
- */
 
 function detectMime(uint8) {
   const h = (n) => uint8[n];
@@ -23,7 +19,7 @@ function detectMime(uint8) {
 async function uploadCatbox(uint8, typeInfo) {
   const blob = new Blob([uint8], { type: typeInfo.mime });
   const form = new FormData();
-  form.append("fileToUpload", blob, `sannasa-${Date.now()}.${typeInfo.ext}`);
+  form.append("fileToUpload", blob, `nexora-${Date.now()}.${typeInfo.ext}`);
   form.append("userhash", "");
   form.append("reqtype", "fileupload");
   const res = await fetch("https://catbox.moe/user/api.php", {
@@ -43,7 +39,7 @@ async function uploadCatbox(uint8, typeInfo) {
 async function uploadLitterbox(uint8, typeInfo) {
   const blob = new Blob([uint8], { type: typeInfo.mime });
   const form = new FormData();
-  form.append("fileToUpload", blob, `sannasa-${Date.now()}.${typeInfo.ext}`);
+  form.append("fileToUpload", blob, `nexora-${Date.now()}.${typeInfo.ext}`);
   form.append("reqtype", "fileupload");
   form.append("time", "72h");
   const res = await fetch("https://litterbox.catbox.moe/resources/internals/api.php", {
@@ -63,7 +59,7 @@ async function uploadLitterbox(uint8, typeInfo) {
 async function uploadPomf(uint8, typeInfo) {
   const blob = new Blob([uint8], { type: typeInfo.mime });
   const form = new FormData();
-  form.append("files[]", blob, `sannasa-${Date.now()}.${typeInfo.ext}`);
+  form.append("files[]", blob, `nexora-${Date.now()}.${typeInfo.ext}`);
   const res = await fetch("https://pomf.lain.la/upload.php", {
     method: "POST",
     body: form,
@@ -83,7 +79,7 @@ async function uploadPomf(uint8, typeInfo) {
 async function uploadQuax(uint8, typeInfo) {
   const blob = new Blob([uint8], { type: typeInfo.mime });
   const form = new FormData();
-  form.append("files[]", blob, `sannasa-${Date.now()}.${typeInfo.ext}`);
+  form.append("files[]", blob, `nexora-${Date.now()}.${typeInfo.ext}`);
   const res = await fetch("https://qu.ax/upload.php", {
     method: "POST",
     body: form,
